@@ -1,4 +1,4 @@
-use starknet::{ContractAddress};
+use starknet::ContractAddress;
 
 // ===== Ball Models =====
 
@@ -11,7 +11,7 @@ pub enum BallColor {
     Blue,
     Pink,
     Black,
-    White, // Cue ball
+    White // Cue ball
 }
 
 impl BallColorValue of Into<BallColor, u8> {
@@ -180,11 +180,19 @@ impl Vec2Impl of Vec2Trait {
     fn is_equal(self: Vec2, b: Vec2) -> bool {
         self.x == b.x && self.y == b.y
     }
-    
+
     fn distance(self: Vec2, other: Vec2) -> u32 {
         // Simple manhattan distance calculation
-        let x_diff = if self.x > other.x { self.x - other.x } else { other.x - self.x };
-        let y_diff = if self.y > other.y { self.y - other.y } else { other.y - self.y };
+        let x_diff = if self.x > other.x {
+            self.x - other.x
+        } else {
+            other.x - self.x
+        };
+        let y_diff = if self.y > other.y {
+            self.y - other.y
+        } else {
+            other.y - self.y
+        };
         x_diff + y_diff
     }
 }
@@ -196,16 +204,16 @@ impl Vec2Impl of Vec2Trait {
 pub struct TableConfig {
     #[key]
     pub game_id: u32,
-    pub width: u32,  // Standard snooker table dimensions
+    pub width: u32, // Standard snooker table dimensions
     pub height: u32, // (scaled to appropriate units)
-    pub pocket_positions: Array<Vec2>, // Positions of the 6 pockets
+    pub pocket_positions: Array<Vec2> // Positions of the 6 pockets
 }
 
 // ===== Tests =====
 
 #[cfg(test)]
 mod tests {
-    use super::{Vec2, Vec2Trait, BallColor};
+    use super::{BallColor, Vec2, Vec2Trait};
 
     #[test]
     fn test_vec_is_zero() {
@@ -219,7 +227,7 @@ mod tests {
         assert(position.is_equal(Vec2 { x: 420, y: 0 }), 'not equal');
         assert(!position.is_equal(Vec2 { x: 421, y: 0 }), 'should not be equal');
     }
-    
+
     #[test]
     fn test_ball_colors() {
         assert(BallColor::Red.into() == 1_u8, 'wrong red value');

@@ -15,11 +15,9 @@ pub trait IActions<T> {
 // dojo decorator
 #[dojo::contract]
 pub mod actions {
-    use super::{IActions, Direction, Position, next_position};
-    use starknet::{ContractAddress, get_caller_address};
-    use dojo_starter::models::{Vec2, Moves};
-
-    use dojo::model::{ModelStorage};
     use dojo::event::EventStorage;
-
+    use dojo::model::ModelStorage;
+    use dojo_starter::models::{Moves, Vec2};
+    use starknet::{ContractAddress, get_caller_address};
+    use super::{Direction, IActions, Position, next_position};
 }
