@@ -1,10 +1,15 @@
 pub mod systems {
-    pub mod actions;
+    pub mod Snooknet;
 }
 
-pub mod models;
-// pub mod tests {
-//     mod test_world;
-// }
+pub mod model {
+    pub mod game_model;
+}
 
+pub mod interfaces {
+    pub mod ISnooknet;
+}
 
+pub mod tests {
+    mod test_world;
+}
