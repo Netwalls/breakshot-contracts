@@ -12,14 +12,19 @@ jobs:
             - uses: software-mansion/setup-scarb@v1
               with:
                   scarb-version: '2.9.4'
-            - run: |
-                  curl -L https://install.dojoengine.org | bash
+            - name: Install Dojo
+              run: |
+                  mkdir -p /home/runner/.config/.dojo/bin
+                  curl -L https://github.com/dojoengine/dojo/releases/download/v1.4.0/dojoup -o /home/runner/.config/.dojo/bin/dojoup
+                  chmod +x /home/runner/.config/.dojo/bin/dojoup
                   /home/runner/.config/.dojo/bin/dojoup -v ${{ env.DOJO_VERSION }}
-            - run: |
+                  /home/runner/.config/.dojo/bin/dojoup install
+            - name: Build and Test
+              run: |
                   /home/runner/.config/.dojo/bin/sozo build
                   /home/runner/.config/.dojo/bin/sozo test
-                  if [[ git status --porcelain ]]; then
-                    echo The git repo is dirty
+                  if [[ $(git status --porcelain) ]]; then
+                    echo "The git repo is dirty"
                     echo "Make sure to run \"sozo build\" after changing Scarb.toml"
                     exit 1
                   fi
