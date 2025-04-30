@@ -1,84 +1,25 @@
-name: Build and Test Dojo Contracts
+name: Build and test Dojo contracts
 
-on:
-    push:
-        branches: [main]
-    pull_request:
-        branches: [main]
+on: [push, pull_request]
 
 jobs:
-    sozo-build-and-test:
+    sozo-test:
         runs-on: ubuntu-latest
         env:
             DOJO_VERSION: v1.4.0
-            SCARB_VERSION: 2.9.4
         steps:
-            # Checkout the repository
-            - uses: actions/checkout@v4
-
-            # Set up Scarb
-            - name: Set up Scarb
-              uses: software-mansion/setup-scarb@v1
+            - uses: actions/checkout@v3
+            - uses: software-mansion/setup-scarb@v1
               with:
-                  scarb-version: ${{ env.SCARB_VERSION }}
-
-            # Cache Scarb dependencies
-            - name: Cache Scarb dependencies
-              uses: actions/cache@v4
-              with:
-                  path: ~/.scarb
-                  key: ${{ runner.os }}-scarb-${{ env.SCARB_VERSION }}-${{ hashFiles('src/systems/Scarb.toml') }}
-                  restore-keys: ${{ runner.os }}-scarb-${{ env.SCARB_VERSION }}-
-
-            # Install Dojo with debugging
-            - name: Install Dojo
-              run: |
-                  # Create the directory for Dojo binaries
-                  mkdir -p $HOME/.dojo/bin
-                  # Download and run the installer
-                                    curl -L https://install.dojoengine.org | bash
-
-                  # Debug: Check the exit code and directory contents
-                  echo "Installer exit code: $?"
-                  ls -la $HOME/.dojo/bin || echo "Directory exists but no binaries found"
-                  # Manually add to PATH for this step
-                  export PATH=$PATH:$HOME/.dojo/bin
-                  # Verify the installation
-                  dojoup -v ${{ env.DOJO_VERSION }}
-                  sozo --version
-                  # Add to GITHUB_PATH for subsequent steps
-                  echo "$HOME/.dojo/bin" >> $GITHUB_PATH
-
-            # Fetch dependencies
-            - name: Fetch dependencies
-              working-directory: ./src/systems
-              run: scarb fetch
-
-            # Build contracts
-            - name: Build contracts
-              working-directory: ./src/systems
-              run: sozo build
-
-            # Run tests
-            - name: Run tests
-              working-directory: ./src/systems
-              run: sozo test --path ../tests
-
-            # Check for clean Git state
-            - name: Check Git state
-              run: |
-                  if [[ -n "$(git status --porcelain)" ]]; then
-                    echo "Error: Git repository is dirty after running 'sozo build'."
-                    echo "Ensure 'sozo build' is run locally in the 'src/systems' folder and all generated files are committed."
-                    git status
+                  scarb-version: '2.9.4'
+            - run: |
+                  curl -L https://install.dojoengine.org | bash
+                  /home/runner/.config/.dojo/bin/dojoup -v ${{ env.DOJO_VERSION }}
+            - run: |
+                  /home/runner/.config/.dojo/bin/sozo build
+                  /home/runner/.config/.dojo/bin/sozo test
+                  if [[ git status --porcelain ]]; then
+                    echo The git repo is dirty
+                    echo "Make sure to run \"sozo build\" after changing Scarb.toml"
                     exit 1
                   fi
-
-            # Upload build artifacts
-            - name: Upload build artifacts
-              if: always()
-              uses: actions/upload-artifact@v4
-              with:
-                  name: dojo-build-artifacts
-                  path: ./src/systems/target/
-                  retention-days: 7
