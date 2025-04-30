@@ -163,7 +163,7 @@ mod tests {
     // New test: Verify rating update after a win
     #[test]
     fn test_rating_update_after_win() {
-        let caller_1 = contract_address_const::<''aji''>();
+        let caller_1 = contract_address_const::<'aji'>();
         let player_1 = contract_address_const::<'player'>();
 
         let ndef = namespace_def();
