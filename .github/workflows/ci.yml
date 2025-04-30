@@ -1,77 +1,79 @@
 name: Build and Test Dojo Contracts
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
 
 jobs:
-  sozo-build-and-test:
-    runs-on: ubuntu-latest
-    env:
-      DOJO_VERSION: v1.4.0
-      SCARB_VERSION: 2.9.4
-    steps:
-      # Checkout the repository
-      - uses: actions/checkout@v4
+    sozo-build-and-test:
+        runs-on: ubuntu-latest
+        env:
+            DOJO_VERSION: v1.4.0
+            SCARB_VERSION: 2.9.4
+        steps:
+            # Checkout the repository
+            - uses: actions/checkout@v4
 
-      # Set up Scarb
-      - name: Set up Scarb
-        uses: software-mansion/setup-scarb@v1
-        with:
-          scarb-version: ${{ env.SCARB_VERSION }}
+            # Set up Scarb
+            - name: Set up Scarb
+              uses: software-mansion/setup-scarb@v1
+              with:
+                  scarb-version: ${{ env.SCARB_VERSION }}
 
-      # Cache Scarb dependencies
-      - name: Cache Scarb dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.scarb
-          key: ${{ runner.os }}-scarb-${{ env.SCARB_VERSION }}-${{ hashFiles('src/systems/Scarb.toml') }}
-          restore-keys: ${{ runner.os }}-scarb-${{ env.SCARB_VERSION }}-
+            # Cache Scarb dependencies
+            - name: Cache Scarb dependencies
+              uses: actions/cache@v4
+              with:
+                  path: ~/.scarb
+                  key: ${{ runner.os }}-scarb-${{ env.SCARB_VERSION }}-${{ hashFiles('src/systems/Scarb.toml') }}
+                  restore-keys: ${{ runner.os }}-scarb-${{ env.SCARB_VERSION }}-
 
-      # Install Dojo and update to the specified version
-      - name: Install Dojo
-        run: |
-          # Install Dojo using the official installer
-          curl -L https://install.dojoengine.org | bash
-          # Add Dojo binaries to PATH
-          echo "$HOME/.dojo/bin" >> $GITHUB_PATH
-          # Update to the specified Dojo version
-          dojoup -v ${{ env.DOJO_VERSION }}
-          # Verify the installation
-          sozo --version
+            # Install Dojo
+            - name: Install Dojo
+              run: |
+                  curl -L https://install.dojoengine.org | bash
+                  echo "$HOME/.dojo/bin" >> $GITHUB_PATH
+                  # Debug: Verify the installation
+                  ls -la $HOME/.dojo/bin
 
-      # Fetch dependencies
-      - name: Fetch dependencies
-        working-directory: ./src/systems
-        run: scarb fetch
+            # Update Dojo and verify
+            - name: Update Dojo and verify
+              run: |
+                  dojoup -v ${{ env.DOJO_VERSION }}
+                  sozo --version
 
-      # Build contracts
-      - name: Build contracts
-        working-directory: ./src/systems
-        run: sozo build
+            # Fetch dependencies
+            - name: Fetch dependencies
+              working-directory: ./src/systems
+              run: scarb fetch
 
-      # Run tests
-      - name: Run tests
-        working-directory: ./src/systems
-        run: sozo test --path ../tests
+            # Build contracts
+            - name: Build contracts
+              working-directory: ./src/systems
+              run: sozo build
 
-      # Check for clean Git state
-      - name: Check Git state
-        run: |
-          if [[ -n "$(git status --porcelain)" ]]; then
-            echo "Error: Git repository is dirty after running 'sozo build'."
-            echo "Ensure 'sozo build' is run locally in the 'src/systems' folder and all generated files are committed."
-            git status
-            exit 1
-          fi
+            # Run tests
+            - name: Run tests
+              working-directory: ./src/systems
+              run: sozo test --path ../tests
 
-      # Upload build artifacts
-      - name: Upload build artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: dojo-build-artifacts
-          path: ./src/systems/target/
-          retention-days: 7
+            # Check for clean Git state
+            - name: Check Git state
+              run: |
+                  if [[ -n "$(git status --porcelain)" ]]; then
+                    echo "Error: Git repository is dirty after running 'sozo build'."
+                    echo "Ensure 'sozo build' is run locally in the 'src/systems' folder and all generated files are committed."
+                    git status
+                    exit 1
+                  fi
+
+            # Upload build artifacts
+            - name: Upload build artifacts
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: dojo-build-artifacts
+                  path: ./src/systems/target/
+                  retention-days: 7
