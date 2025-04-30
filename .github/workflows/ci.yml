@@ -30,12 +30,20 @@ jobs:
                   key: ${{ runner.os }}-scarb-${{ env.SCARB_VERSION }}-${{ hashFiles('src/systems/Scarb.toml') }}
                   restore-keys: ${{ runner.os }}-scarb-${{ env.SCARB_VERSION }}-
 
-            # Install Dojo
+            # Install Dojo using prebuilt binary
             - name: Install Dojo
               run: |
-                  curl -L https://install.dojoengine.org | bash
+                  # Create the directory for Dojo binaries
+                  mkdir -p $HOME/.dojo/bin
+                  # Download the prebuilt binary for the specified version (Linux x86_64)
+                  wget https://github.com/dojoengine/dojo/releases/download/${{ env.DOJO_VERSION }}/dojo-${{ env.DOJO_VERSION }}-x86_64-linux.tar.gz
+                  # Extract the tarball
+                  tar -xzf dojo-${{ env.DOJO_VERSION }}-x86_64-linux.tar.gz
+                  # Move binaries to ~/.dojo/bin
+                  mv dojo-${{ env.DOJO_VERSION }}-x86_64-linux/* $HOME/.dojo/bin/
+                  # Add to PATH
                   echo "$HOME/.dojo/bin" >> $GITHUB_PATH
-                  # Debug: Verify the installation
+                  # Verify the installation
                   ls -la $HOME/.dojo/bin
 
             # Update Dojo and verify
