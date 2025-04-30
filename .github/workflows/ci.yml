@@ -30,27 +30,24 @@ jobs:
                   key: ${{ runner.os }}-scarb-${{ env.SCARB_VERSION }}-${{ hashFiles('src/systems/Scarb.toml') }}
                   restore-keys: ${{ runner.os }}-scarb-${{ env.SCARB_VERSION }}-
 
-            # Install Dojo using prebuilt binary
+            # Install Dojo with debugging
             - name: Install Dojo
               run: |
                   # Create the directory for Dojo binaries
                   mkdir -p $HOME/.dojo/bin
-                  # Download the prebuilt binary for the specified version (Linux x86_64)
-                  wget https://github.com/dojoengine/dojo/releases/download/${{ env.DOJO_VERSION }}/dojo-${{ env.DOJO_VERSION }}-x86_64-linux.tar.gz
-                  # Extract the tarball
-                  tar -xzf dojo-${{ env.DOJO_VERSION }}-x86_64-linux.tar.gz
-                  # Move binaries to ~/.dojo/bin
-                  mv dojo-${{ env.DOJO_VERSION }}-x86_64-linux/* $HOME/.dojo/bin/
-                  # Add to PATH
-                  echo "$HOME/.dojo/bin" >> $GITHUB_PATH
-                  # Verify the installation
-                  ls -la $HOME/.dojo/bin
+                  # Download and run the installer
+                                    curl -L https://install.dojoengine.org | bash
 
-            # Update Dojo and verify
-            - name: Update Dojo and verify
-              run: |
+                  # Debug: Check the exit code and directory contents
+                  echo "Installer exit code: $?"
+                  ls -la $HOME/.dojo/bin || echo "Directory exists but no binaries found"
+                  # Manually add to PATH for this step
+                  export PATH=$PATH:$HOME/.dojo/bin
+                  # Verify the installation
                   dojoup -v ${{ env.DOJO_VERSION }}
                   sozo --version
+                  # Add to GITHUB_PATH for subsequent steps
+                  echo "$HOME/.dojo/bin" >> $GITHUB_PATH
 
             # Fetch dependencies
             - name: Fetch dependencies
