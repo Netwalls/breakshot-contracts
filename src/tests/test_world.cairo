@@ -18,7 +18,6 @@ mod tests {
         Game, m_Game, GameState, GameCounter, m_GameCounter, PlayerRating, m_PlayerRating,
     };
     use starknet::{testing, get_caller_address, contract_address_const};
-    use dojo_starter::model::game_model::{m_Game, GameState, m_GameCounter};
     use dojo_starter::model::tournament_model::{m_Tournament, m_TournamentCounter};
     use dojo_starter::model::player_model::{m_Player};
 
@@ -156,6 +155,7 @@ mod tests {
     fn test_player_rating_initialization() {
         let caller_1 = contract_address_const::<'aji'>();
         let player_1 = contract_address_const::<'player'>();
+    }
 
     #[test]
     fn test_create_tournament() {

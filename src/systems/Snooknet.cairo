@@ -6,7 +6,6 @@ use dojo::event::EventStorage;
 
 use dojo_starter::interfaces::ISnooknet::ISnooknet;
 use dojo_starter::model::game_model::{Game, GameTrait, GameState, GameCounter, PlayerRating};
-use dojo_starter::model::game_model::{Game, GameTrait, GameState, GameCounter};
 use dojo_starter::model::tournament_model::{
     Tournament as TournamentModel, TournamentTrait, TournamentStatus, TournamentReward,
     TournamentCounter,
@@ -437,6 +436,8 @@ pub mod Snooknet {
             } else {
                 0_u32
             }
+        }
+
         fn create_new_tournament_id(ref self: ContractState) -> u256 {
             let mut world = self.world_default();
             let mut tournament_counter: TournamentCounter = world.read_model('v0');
@@ -447,4 +448,5 @@ pub mod Snooknet {
         }
     }
 }
+
 
