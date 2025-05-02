@@ -5,9 +5,7 @@ use dojo::event::EventStorage;
 
 
 use dojo_starter::interfaces::ISnooknet::ISnooknet;
-<<<<<<< HEAD
 use dojo_starter::model::game_model::{Game, GameTrait, GameState, GameCounter, PlayerRating};
-=======
 use dojo_starter::model::game_model::{Game, GameTrait, GameState, GameCounter};
 use dojo_starter::model::tournament_model::{
     Tournament as TournamentModel, TournamentTrait, TournamentStatus, TournamentReward,
@@ -15,21 +13,17 @@ use dojo_starter::model::tournament_model::{
 };
 use dojo_starter::model::player_model::{Player, PlayerTrait};
 
->>>>>>> 20dde80835f94f06273b67e65f0a383eaeab24d0
 
 // dojo decorator
 #[dojo::contract]
 pub mod Snooknet {
-<<<<<<< HEAD
     use super::{ISnooknet, Game, GameTrait, GameCounter, GameState, PlayerRating};
     use starknet::{
         ContractAddress, get_caller_address, get_block_timestamp, contract_address_const,
     };
     use dojo::model::{ModelStorage};
     use dojo::event::EventStorage;
-=======
     use super::*;
->>>>>>> 20dde80835f94f06273b67e65f0a383eaeab24d0
 
     #[derive(Copy, Drop, Serde)]
     #[dojo::event]
@@ -306,7 +300,6 @@ pub mod Snooknet {
             self.world(@"Snooknet")
         }
 
-<<<<<<< HEAD
         fn ensure_player_rating(ref self: ContractState, player: ContractAddress) {
             let mut world = self.world_default();
             let mut rating: PlayerRating = world.read_model(player);
@@ -444,7 +437,6 @@ pub mod Snooknet {
             } else {
                 0_u32
             }
-=======
         fn create_new_tournament_id(ref self: ContractState) -> u256 {
             let mut world = self.world_default();
             let mut tournament_counter: TournamentCounter = world.read_model('v0');
@@ -452,7 +444,6 @@ pub mod Snooknet {
             tournament_counter.current_val = new_val;
             world.write_model(@tournament_counter);
             new_val
->>>>>>> 20dde80835f94f06273b67e65f0a383eaeab24d0
         }
     }
 }

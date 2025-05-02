@@ -14,16 +14,13 @@ mod tests {
     use dojo_starter::interfaces::ISnooknet::{ISnooknetDispatcher, ISnooknetDispatcherTrait};
     use dojo_starter::model::tournament_model::{TournamentStatus, TournamentReward, Tournament};
 
-<<<<<<< HEAD
     use dojo_starter::model::game_model::{
         Game, m_Game, GameState, GameCounter, m_GameCounter, PlayerRating, m_PlayerRating,
     };
     use starknet::{testing, get_caller_address, contract_address_const};
-=======
     use dojo_starter::model::game_model::{m_Game, GameState, m_GameCounter};
     use dojo_starter::model::tournament_model::{m_Tournament, m_TournamentCounter};
     use dojo_starter::model::player_model::{m_Player};
->>>>>>> 20dde80835f94f06273b67e65f0a383eaeab24d0
 
     fn namespace_def() -> NamespaceDef {
         let ndef = NamespaceDef {
@@ -154,17 +151,14 @@ mod tests {
         assert(game.state == GameState::Finished, 'Game not ended');
     }
 
-<<<<<<< HEAD
     // New test: Verify player rating initialization
     #[test]
     fn test_player_rating_initialization() {
         let caller_1 = contract_address_const::<'aji'>();
         let player_1 = contract_address_const::<'player'>();
 
-=======
     #[test]
     fn test_create_tournament() {
->>>>>>> 20dde80835f94f06273b67e65f0a383eaeab24d0
         let ndef = namespace_def();
         let mut world = spawn_test_world([ndef].span());
         world.sync_perms_and_inits(contract_defs());
@@ -172,7 +166,6 @@ mod tests {
         let (contract_address, _) = world.dns(@"Snooknet").unwrap();
         let actions_system = ISnooknetDispatcher { contract_address };
 
-<<<<<<< HEAD
         testing::set_contract_address(caller_1);
         let game_id = actions_system.create_match(player_1, 400);
 
@@ -188,7 +181,6 @@ mod tests {
         let caller_1 = contract_address_const::<'aji'>();
         let player_1 = contract_address_const::<'player'>();
 
-=======
         let organizer = contract_address_const::<'organizer'>();
         set_contract_address(organizer);
 
@@ -217,7 +209,6 @@ mod tests {
 
     #[test]
     fn test_join_tournament() {
->>>>>>> 20dde80835f94f06273b67e65f0a383eaeab24d0
         let ndef = namespace_def();
         let mut world = spawn_test_world([ndef].span());
         world.sync_perms_and_inits(contract_defs());
@@ -225,7 +216,6 @@ mod tests {
         let (contract_address, _) = world.dns(@"Snooknet").unwrap();
         let actions_system = ISnooknetDispatcher { contract_address };
 
-<<<<<<< HEAD
         testing::set_contract_address(caller_1);
         let game_id = actions_system.create_match(player_1, 400);
 
@@ -244,7 +234,6 @@ mod tests {
         let caller_1 = contract_address_const::<'aji'>();
         let player_1 = contract_address_const::<'player'>();
 
-=======
         let organizer = contract_address_const::<'organizer'>();
         set_contract_address(organizer);
 
@@ -275,7 +264,6 @@ mod tests {
 
     #[test]
     fn test_end_tournament() {
->>>>>>> 20dde80835f94f06273b67e65f0a383eaeab24d0
         let ndef = namespace_def();
         let mut world = spawn_test_world([ndef].span());
         world.sync_perms_and_inits(contract_defs());
@@ -283,7 +271,6 @@ mod tests {
         let (contract_address, _) = world.dns(@"Snooknet").unwrap();
         let actions_system = ISnooknetDispatcher { contract_address };
 
-<<<<<<< HEAD
         testing::set_contract_address(caller_1);
         let game_id = actions_system.create_match(player_1, 400);
 
@@ -341,7 +328,6 @@ mod tests {
 
         testing::set_contract_address(caller_1);
         actions_system.end_match(game_id, invalid_winner);
-=======
         let organizer = contract_address_const::<'organizer'>();
         set_contract_address(organizer);
 
@@ -363,6 +349,5 @@ mod tests {
 
         let tournament: Tournament = world.read_model(tournament_id);
         assert(tournament.status == TournamentStatus::Ended, 'Tournament should be ended');
->>>>>>> 20dde80835f94f06273b67e65f0a383eaeab24d0
     }
 }
