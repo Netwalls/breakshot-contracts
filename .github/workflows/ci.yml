@@ -1,36 +1,39 @@
-name: CI Pipeline
-
+name: Contracts CI
 on:
-    push:
-        branches:
-            - main
-    pull_request:
-        branches:
-            - main
-
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
 jobs:
-    check:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
 
-            - uses: software-mansion/setup-scarb@v1
-              with:
-                  scarb-version: '2.11.4' # Latest version
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-            - uses: foundry-rs/setup-snfoundry@v3
-              with:
-                    starknet-foundry-version: '0.41.0' # Latest stable version
+      - name: Install asdf
+        uses: asdf-vm/actions/setup@v2
 
-            - name: Check Versions
-              run: |
-                  scarb --version
-                  snforge -V
-            - name: Format Check
-              run: scarb fmt --check
-
-            - name: Run Tests
-              run: snforge test
-
-            - name: Build Project
-              run: scarb build
+      - name: Install plugins
+        run: |
+          asdf plugin add scarb
+          asdf install scarb 2.9.4
+          asdf global scarb 2.9.4
+          asdf plugin add dojo https://github.com/dojoengine/asdf-dojo
+          asdf install dojo 1.4.0 
+          asdf global dojo 1.4.0
+      - name: Build contracts
+        run: |
+          sozo build
+      - name: Run tests
+        run: |
+          sozo test
+      - name: Check formatting
+        run: |
+          scarb fmt --check
