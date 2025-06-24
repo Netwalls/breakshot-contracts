@@ -1,32 +1,26 @@
-![Dojo Starter](./assets/cover.png)
+Snooknet delivers authentic snooker gameplay on Starknet with transparent, low-cost, player-owned mechanics, enabling global competition and rewarding skill with tradable NFT assets and tokens.
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset=".github/mark-dark.svg">
-  <img alt="Dojo logo" align="right" width="120" src=".github/mark-light.svg">
-</picture>
 
-<a href="https://x.com/ohayo_dojo">
-<img src="https://img.shields.io/twitter/follow/dojostarknet?style=social"/>
-</a>
-<a href="https://github.com/dojoengine/dojo/stargazers">
-<img src="https://img.shields.io/github/stars/dojoengine/dojo?style=social"/>
-</a>
+### Project Structure
+snooknet/
+├── Scarb.toml          # Project configuration
+├── src/
+│   ├── errors/         # Custom error definitions (e.g., error.cairo)
+│   ├── events/         # Event definitions (e.g., events.cairo)
+│   ├── interfaces/     # Interface definitions (e.g., ISnooknet.cairo)
+│   ├── model/          # Data models (e.g., game_model.cairo)
+│   ├── systems/        # Contract logic (e.g., Snooknet.cairo)
+│   └── tests/          # Test files (e.g., test_world.cairo)
+├── README.md           # This file
 
-[![discord](https://img.shields.io/badge/join-dojo-green?logo=discord&logoColor=white)](https://discord.com/invite/dojoengine)
-[![Telegram Chat][tg-badge]][tg-url]
 
-[tg-badge]: https://img.shields.io/endpoint?color=neon&logo=telegram&label=chat&style=flat-square&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fdojoengine
-[tg-url]: https://t.me/dojoengine
-
-# Dojo Starter: Official Guide
-
-A quickstart guide to help you build and deploy your first Dojo provable game.
-
-Read the full tutorial [here](https://dojoengine.org/tutorial/dojo-starter).
-
-## Running Locally
-
-#### Terminal one (Make sure this is running)
+## Installation
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/your-username/snooknet.git
+   cd snooknet
+   ```
+2. **
 
 ```bash
 # Run Katana
@@ -44,10 +38,6 @@ sozo inspect
 
 # Migrate the example
 sozo migrate
-
-# Start Torii
-# Replace <WORLD_ADDRESS> with the address of the deployed world from the previous step
-torii --world <WORLD_ADDRESS> --http.cors_origins "*"
 ```
 
 ## Docker
@@ -56,21 +46,5 @@ You can start stack using docker compose. [Here are the installation instruction
 ```bash
 docker compose up
 ```
-You'll get all services logs in the same terminal instance. Whenever you want to stop just ctrl+c
 
----
 
-## Contribution
-
-1. **Report a Bug**
-
-    - If you think you have encountered a bug, and we should know about it, feel free to report it [here](https://github.com/dojoengine/dojo-starter/issues) and we will take care of it.
-
-2. **Request a Feature**
-
-    - You can also request for a feature [here](https://github.com/dojoengine/dojo-starter/issues), and if it's viable, it will be picked for development.
-
-3. **Create a Pull Request**
-    - It can't get better then this, your pull request will be appreciated by the community.
-
-Happy coding!
