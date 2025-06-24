@@ -15,3 +15,7 @@ pub mod interfaces {
 pub mod tests {
     mod test_world;
 }
+
+pub mod errors {
+    pub mod errors;
+}

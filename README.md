@@ -23,12 +23,11 @@ snooknet/
 ```
 
 ## Installation
-1. **Clone the Repository**
+**Clone the Repository**
    ```bash
    git clone https://github.com/your-username/snooknet.git
    cd snooknet
    ```
-2. **
 
 ### Building the Project
 Compile the contract:
@@ -40,6 +39,12 @@ sozo build
 Run tests using Starknet Foundry:
 ```bash
 sozo test
+```
+
+### Formatting
+Format your code before pushing
+```
+scarb fmt --check
 ```
 
 ### Deployment
@@ -57,7 +62,7 @@ Ensure you have the necessary permissions and funds for deployment.
 5. Open a Pull Request.
 
 ## Contact
-For questions or support, reach out via [Telegram](https://t.me/GoSTEAN) or open an issue on GitHub.
+For questions or support, reach out via [Telegram](https://t.me/SnookNet) or open an issue on GitHub.
 
 ## Docker
 You can start stack using docker compose. [Here are the installation instruction](https://docs.docker.com/engine/install/)
