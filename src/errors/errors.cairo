@@ -17,6 +17,17 @@ pub enum SnooknetError {
     TournamentIsFull,
     TournamentNotInProgress,
     InvalidBallType,
+    PlayerAlreadyRegistered,
+    NotTournamentOrganizer,
+    TournamentNotPending,
+    InvalidEndDate,
+    PlayerNotRegistered,
+    TournamentNotInProgressOrEnded,
+    InvalidOpponent,
+    NotMatchParticipant,
+    MatchNotPending,
+    MatchNotInProgress,
+    MatchNotInProgressOrPaused,
 }
 
 impl SnooknetErrorIntoFelt252 of Into<SnooknetError, felt252> {
@@ -35,6 +46,18 @@ impl SnooknetErrorIntoFelt252 of Into<SnooknetError, felt252> {
             SnooknetError::TournamentIsFull => 'Tournament is full',
             SnooknetError::TournamentNotInProgress => 'Tournament is not in progress',
             SnooknetError::InvalidBallType => 'Invalid ball type',
+            SnooknetError::PlayerAlreadyRegistered => 'Player already registered',
+            SnooknetError::NotTournamentOrganizer => 'Not Organizer',
+            SnooknetError::TournamentNotPending => 'Tournament not pending',
+            SnooknetError::InvalidEndDate => 'Invalid end  date',
+            SnooknetError::PlayerNotRegistered => 'Player not registered',
+            SnooknetError::TournamentNotInProgressOrEnded => 'Tournament in progress or ended',
+            SnooknetError::InvalidOpponent => 'Invalid Opponent',
+            SnooknetError::NotMatchParticipant => 'NotMatch Participant',
+            SnooknetError::MatchNotPending => 'Match Not Pending',
+            SnooknetError::MatchNotInProgress => 'Match Not In Progress',
+            SnooknetError::MatchNotInProgressOrPaused => 'Match Not In Progress Or Paused',
+
         }
     }
 }

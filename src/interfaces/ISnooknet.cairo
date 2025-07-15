@@ -1,5 +1,5 @@
 use dojo_starter::model::game_model::{Game};
-use dojo_starter::model::tournament_model::TournamentReward;
+use dojo_starter::model::new_tourn_models::TournamentReward;
 
 use starknet::{ContractAddress};
 
@@ -13,16 +13,8 @@ pub trait ISnooknet<T> {
     fn end_match(ref self: T, game_id: u256, winner: ContractAddress);
     fn retrieve_game(ref self: T, game_id: u256) -> Game;
 
-    fn create_tournament(
-        ref self: T,
-        name: felt252,
-        max_players: u8,
-        start_date: u64,
-        end_date: u64,
-        rewards: Array<TournamentReward>,
-    ) -> u256;
+    
     fn join_tournament(ref self: T, tournament_id: u256);
-    fn end_tournament(ref self: T, tournament_id: u256);
     fn start_match(ref self: T, game_id: u256) -> bool;
 
     // Pause an ongoing match, updating its status

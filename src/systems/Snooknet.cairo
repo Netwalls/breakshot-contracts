@@ -8,7 +8,7 @@ use dojo_starter::interfaces::ISnooknet::ISnooknet;
 use dojo_starter::model::game_model::{
     Game, GameTrait, GameState, GameCounter, MatchStatus, BallState, GameIndex,GameScore
 };
-use dojo_starter::model::tournament_model::{
+use dojo_starter::model::new_tourn_models::{
     Tournament as TournamentModel, TournamentTrait, TournamentStatus, TournamentReward,
     TournamentCounter,
 };
@@ -52,16 +52,6 @@ pub mod Snooknet {
         pub winner: ContractAddress,
     }
 
-    #[dojo::event]
-    #[derive(Copy, Drop, Serde)]
-    pub struct TournamentCreated {
-        #[key]
-        tournament_id: u256,
-        name: felt252,
-        organizer: ContractAddress,
-        start_date: u64,
-        end_date: u64,
-    }
 
     #[dojo::event]
     #[derive(Copy, Drop, Serde)]
@@ -82,18 +72,25 @@ pub mod Snooknet {
 
     #[abi(embed_v0)]
     impl SnooknetImpl of ISnooknet<ContractState> {
-        fn create_player(ref self: ContractState) {
-            let mut world = self.world_default();
+        // fn create_player(ref self: ContractState) {
+        //     let mut world = self.world_default();
 
-            let caller: ContractAddress = get_caller_address();
+        //     let caller: ContractAddress = get_caller_address();
 
-            let new_player: Player = PlayerTrait::new(caller, 0, 0, 0, 0, 0, 0, 1);
+        //     let new_player: Player = PlayerTrait::new(caller, 0, 0, 0, 0, 0, 0, 1);
 
-            world.write_model(@new_player);
+        //     world.write_model(@new_player);
 
-            world.emit_event(@PlayerCreated { player: caller, timestamp: get_block_timestamp() });
-        }
+        //     world.emit_event(@PlayerCreated { player: caller, timestamp: get_block_timestamp() });
+        // }
 
+fn create_player(ref self: ContractState) {
+        let mut world = self.world_default();
+        let caller: ContractAddress = get_caller_address();
+        let new_player: Player = PlayerTrait::new(caller, 0, 0, 0, 0, 0, 0, 1, 0);
+        world.write_model(@new_player);
+        world.emit_event(@PlayerCreated { player: caller, timestamp: get_block_timestamp() });
+    }
 
         fn create_new_game_id(ref self: ContractState) -> u256 {
             let mut world = self.world_default();
@@ -104,37 +101,67 @@ pub mod Snooknet {
             new_val
         }
 
-        fn create_match(
-            ref self: ContractState, opponent: ContractAddress, stake_amount: u256,
-        ) -> u256 {
-            let mut world = self.world_default();
-            let game_id = self.create_new_game_id();
-            let timestamp = get_block_timestamp();
-            let player_1 = get_caller_address();
+        // fn create_match(
+        //     ref self: ContractState, opponent: ContractAddress, stake_amount: u256,
+        // ) -> u256 {
+        //     let mut world = self.world_default();
+        //     let game_id = self.create_new_game_id();
+        //     let timestamp = get_block_timestamp();
+        //     let player_1 = get_caller_address();
 
-            assert(player_1 != opponent, SnooknetError::PlayersCannotBeSame.into());
-            assert(stake_amount > 0, SnooknetError::StakeMustBePositive.into());
+        //     assert(player_1 != opponent, SnooknetError::PlayersCannotBeSame.into());
+        //     assert(stake_amount > 0, SnooknetError::StakeMustBePositive.into());
 
-            let mut new_game: Game = GameTrait::new(game_id, player_1, opponent, stake_amount);
+        //     let mut new_game: Game = GameTrait::new(game_id, player_1, opponent, stake_amount);
 
-            new_game.current_turn = player_1;
-            new_game.red_balls_remaining = 15;
-            new_game.state = GameState::NotStarted;
-            new_game.winner = contract_address_const::<0x0>();
+        //     new_game.current_turn = player_1;
+        //     new_game.red_balls_remaining = 15;
+        //     new_game.state = GameState::NotStarted;
+        //     new_game.winner = contract_address_const::<0x0>();
 
-            world.write_model(@new_game);
+        //     world.write_model(@new_game);
 
-            // Index by player1
-            let index1 = GameIndex { player: player_1, game_id, created_at: timestamp };
-            world.write_model(@index1);
+        //     // Index by player1
+        //     let index1 = GameIndex { player: player_1, game_id, created_at: timestamp };
+        //     world.write_model(@index1);
 
-            // Index by player2
-            let index2 = GameIndex { player: opponent, game_id, created_at: timestamp };
-            world.write_model(@index2);
+        //     // Index by player2
+        //     let index2 = GameIndex { player: opponent, game_id, created_at: timestamp };
+        //     world.write_model(@index2);
 
-            world.emit_event(@GameCreated { game_id, timestamp });
-            game_id
-        }
+        //     world.emit_event(@GameCreated { game_id, timestamp });
+        //     game_id
+        // }
+
+fn create_match(
+        ref self: ContractState, opponent: ContractAddress, stake_amount: u256,
+    ) -> u256 {
+        let mut world = self.world_default();
+        let game_id = self.create_new_game_id();
+        let timestamp = get_block_timestamp();
+        let player_1 = get_caller_address();
+
+        assert(player_1 != opponent, SnooknetError::PlayersCannotBeSame.into());
+        assert(stake_amount > 0, SnooknetError::StakeMustBePositive.into());
+
+        let mut new_game: Game = GameTrait::new(game_id, 0, player_1, opponent, stake_amount);
+
+        new_game.current_turn = player_1;
+        new_game.red_balls_remaining = 15;
+        new_game.state = GameState::NotStarted;
+        new_game.winner = contract_address_const::<0x0>();
+
+        world.write_model(@new_game);
+
+        let index1 = GameIndex { player: player_1, game_id, created_at: timestamp };
+        world.write_model(@index1);
+
+        let index2 = GameIndex { player: opponent, game_id, created_at: timestamp };
+        world.write_model(@index2);
+
+        world.emit_event(@GameCreated { game_id, timestamp });
+        game_id
+    }
 
         fn retrieve_game(ref self: ContractState, game_id: u256) -> Game {
             // Get default world
@@ -144,39 +171,7 @@ pub mod Snooknet {
             game
         }
 
-        fn create_tournament(
-            ref self: ContractState,
-            name: felt252,
-            max_players: u8,
-            start_date: u64,
-            end_date: u64,
-            rewards: Array<TournamentReward>,
-        ) -> u256 {
-            let mut world = self.world_default();
-            let tournament_id = self.create_new_tournament_id();
 
-            // Validate input parameters
-            assert(max_players > 1, SnooknetError::MaxPlayersLessThanTwo.into());
-            assert(start_date < end_date, SnooknetError::InvalidStartDate.into());
-
-            let caller = get_caller_address();
-
-            // Create new tournament
-            let mut new_tournament: TournamentModel = TournamentTrait::new(
-                tournament_id, name, caller, max_players, start_date, end_date, rewards,
-            );
-
-            world.write_model(@new_tournament);
-
-            world
-                .emit_event(
-                    @TournamentCreated {
-                        tournament_id, name, organizer: caller, start_date, end_date,
-                    },
-                );
-
-            tournament_id
-        }
 
         fn join_tournament(ref self: ContractState, tournament_id: u256) {
             // Get the caller's address
@@ -207,26 +202,6 @@ pub mod Snooknet {
             world.emit_event(@TournamentJoined { tournament_id, player: caller });
         }
 
-        fn end_tournament(ref self: ContractState, tournament_id: u256) {
-            let mut world = self.world_default();
-            let mut tournament: TournamentModel = world.read_model(tournament_id);
-
-            // Check if tournament is in progress
-            assert(
-                tournament.status == TournamentStatus::Pending
-                    || tournament.status == TournamentStatus::Active,
-                SnooknetError::TournamentNotInProgress.into(),
-            );
-
-            // Update tournament status and timestamp
-            tournament.status = TournamentStatus::Ended;
-            tournament.end_date = get_block_timestamp();
-
-            // Store updated tournament
-            world.write_model(@tournament);
-
-            world.emit_event(@TournamentEnded { tournament_id, end_date: tournament.end_date });
-        }
 
         fn start_match(ref self: ContractState, game_id: u256) -> bool {
             let mut world = self.world_default();

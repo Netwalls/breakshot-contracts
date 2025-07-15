@@ -1,4 +1,5 @@
-use starknet::{ContractAddress};
+use starknet::{ContractAddress, get_caller_address, get_block_timestamp, contract_address_const};
+use dojo_starter::types::tournament_types::SnookerTournament;
 
 #[derive(Serde, Copy, Drop, Introspect)]
 #[dojo::model]
@@ -29,18 +30,21 @@ pub struct Tournament {
     pub id: u256,
     pub name: felt252,
     pub organizer: ContractAddress,
+    pub tournament_type: SnookerTournament,
     pub max_players: u8,
     pub current_players: u8,
     pub start_date: u64,
     pub end_date: u64,
     pub status: TournamentStatus,
     pub rewards: Array<TournamentReward>,
+    pub players: Array<ContractAddress>,
 }
 
 pub trait TournamentTrait {
     fn new(
         id: u256,
         name: felt252,
+        tournament_type: SnookerTournament,
         organizer: ContractAddress,
         max_players: u8,
         start_date: u64,
@@ -53,6 +57,7 @@ impl TournamentImpl of TournamentTrait {
     fn new(
         id: u256,
         name: felt252,
+        tournament_type: SnookerTournament,
         organizer: ContractAddress,
         max_players: u8,
         start_date: u64,
@@ -62,6 +67,7 @@ impl TournamentImpl of TournamentTrait {
         Tournament {
             id,
             name,
+            tournament_type,
             organizer,
             max_players,
             current_players: 0,
@@ -69,6 +75,7 @@ impl TournamentImpl of TournamentTrait {
             end_date,
             status: TournamentStatus::Pending,
             rewards,
+            players: ArrayTrait::new()
         }
     }
 }
@@ -76,7 +83,7 @@ impl TournamentImpl of TournamentTrait {
 
 #[cfg(test)]
 mod tests {
-    use super::{TournamentImpl, TournamentStatus, TournamentReward};
+    use super::{TournamentImpl, TournamentStatus, TournamentReward, SnookerTournament};
     use starknet::contract_address::contract_address_const;
 
     #[test]
@@ -85,6 +92,7 @@ mod tests {
         let id = 1_u256;
         let name = 'Test Tournament';
         let organizer = contract_address_const::<'organizer'>();
+        let tournament_type = SnookerTournament::Ranking;
         let max_players = 8_u8;
         let start_date = 1000_u64;
         let end_date = 2000_u64;
@@ -94,7 +102,7 @@ mod tests {
         rewards.append(TournamentReward { position: 2_u8, amount: 500_u256, token_type: 'ETH' });
 
         let tournament = TournamentImpl::new(
-            id, name, organizer, max_players, start_date, end_date, rewards,
+            id, name, tournament_type, organizer, max_players, start_date, end_date, rewards,
         );
 
         assert(tournament.id == id, 'ID mismatch');
@@ -106,6 +114,7 @@ mod tests {
         assert(tournament.end_date == end_date, 'End date mismatch');
         assert(tournament.status == TournamentStatus::Pending, 'Status should be Pending');
         assert(tournament.rewards.len() == 2, 'Rewards length mismatch');
+        assert(tournament.tournament_type == tournament_type, 'Tournament type mismatch');
     }
 
     #[test]
@@ -114,13 +123,14 @@ mod tests {
         let id = 2_u256;
         let name = 'Empty Rewards Tournament';
         let organizer = contract_address_const::<'organizer'>();
+        let tournament_type = SnookerTournament::Local;
         let max_players = 4_u8;
         let start_date = 1000_u64;
         let end_date = 2000_u64;
         let rewards = ArrayTrait::new();
 
         let tournament = TournamentImpl::new(
-            id, name, organizer, max_players, start_date, end_date, rewards,
+            id, name, tournament_type, organizer, max_players, start_date, end_date, rewards,
         );
 
         assert(tournament.id == id, 'ID mismatch');
@@ -133,13 +143,14 @@ mod tests {
         let id = 340282366920938463463374607431768211455_u256; // max u256
         let name = 'Max Values Tournament';
         let organizer = contract_address_const::<'organizer'>();
+        let tournament_type = SnookerTournament::WorldChampionship;
         let max_players = 255_u8; // max u8
         let start_date = 18446744073709551615_u64; // max u64
         let end_date = 18446744073709551615_u64;
         let rewards = ArrayTrait::new();
 
         let tournament = TournamentImpl::new(
-            id, name, organizer, max_players, start_date, end_date, rewards,
+            id, name, tournament_type, organizer, max_players, start_date, end_date, rewards,
         );
 
         assert(tournament.id == id, 'ID mismatch');
@@ -148,4 +159,3 @@ mod tests {
         assert(tournament.end_date == end_date, 'End date mismatch');
     }
 }
-
