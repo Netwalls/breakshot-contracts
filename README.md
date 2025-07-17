@@ -1,4 +1,4 @@
-Snooknet delivers authentic snooker gameplay on Starknet with transparent, low-cost, player-owned mechanics, enabling global competition and rewarding skill with tradable NFT assets and tokens.
+Breakshot (Formerly Snooknet) delivers authentic snooker gameplay on Starknet with transparent, low-cost, player-owned mechanics, enabling global competition and rewarding skill with tradable NFT assets and tokens.
 
 ## Features
 - **Player Management**: Create and manage player profiles on-chain.
