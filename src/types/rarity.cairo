@@ -15,7 +15,8 @@ pub enum SnookerRarity {
 pub impl SnookerRarityImpl of SnookerRarityTrait {
     fn is_rare(self: @SnookerRarity) -> bool {
         match self {
-            SnookerRarity::Rare | SnookerRarity::VeryRare | SnookerRarity::Epic | SnookerRarity::Unique => true,
+            SnookerRarity::Rare | SnookerRarity::VeryRare | SnookerRarity::Epic |
+            SnookerRarity::Unique => true,
             _ => false,
         }
     }

@@ -104,7 +104,9 @@ pub impl IntoU8SnookerPlayerStatus of Into<u8, SnookerPlayerStatus> {
 }
 
 pub impl SnookerPlayerStatusDisplay of core::fmt::Display<SnookerPlayerStatus> {
-    fn fmt(self: @SnookerPlayerStatus, ref f: core::fmt::Formatter) -> Result<(), core::fmt::Error> {
+    fn fmt(
+        self: @SnookerPlayerStatus, ref f: core::fmt::Formatter,
+    ) -> Result<(), core::fmt::Error> {
         let s = match self {
             SnookerPlayerStatus::Ready => "Ready",
             SnookerPlayerStatus::Playing => "Playing",

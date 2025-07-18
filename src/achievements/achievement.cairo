@@ -1,6 +1,5 @@
 // Mock Task module for demonstration (replace with actual import if available)
 
-
 // Import the Task and TaskTrait (adjust path based on your project structure)
 use dojo_starter::types::task::{Task, TaskTrait};
 
@@ -115,11 +114,26 @@ pub impl SnookerAchievementImpl of SnookerAchievementTrait {
     fn tasks(self: SnookerAchievement) -> Span<Task> {
         match self {
             SnookerAchievement::None => array![].span(), // Explicitly empty array
-            SnookerAchievement::FirstPot => array![TaskTrait::new('First Pot', 1, "Pot a ball in a game")].span(),
-            SnookerAchievement::BreakMaster => array![TaskTrait::new('Break Master', 1, "Score a break of 50+")].span(),
-            SnookerAchievement::CenturyMaker => array![TaskTrait::new('Century Maker', 1, "Score a century break")].span(),
-            SnookerAchievement::MaximumBreak => array![TaskTrait::new('Maximum Break', 1, "Score a 147 break")].span(),
-            SnookerAchievement::LegendShot => array![TaskTrait::new('Legend Shot', 10, "Win 10 frames with a century")].span(),
+            SnookerAchievement::FirstPot => array![
+                TaskTrait::new('First Pot', 1, "Pot a ball in a game"),
+            ]
+                .span(),
+            SnookerAchievement::BreakMaster => array![
+                TaskTrait::new('Break Master', 1, "Score a break of 50+"),
+            ]
+                .span(),
+            SnookerAchievement::CenturyMaker => array![
+                TaskTrait::new('Century Maker', 1, "Score a century break"),
+            ]
+                .span(),
+            SnookerAchievement::MaximumBreak => array![
+                TaskTrait::new('Maximum Break', 1, "Score a 147 break"),
+            ]
+                .span(),
+            SnookerAchievement::LegendShot => array![
+                TaskTrait::new('Legend Shot', 10, "Win 10 frames with a century"),
+            ]
+                .span(),
         }
     }
 

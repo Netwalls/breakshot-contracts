@@ -83,13 +83,21 @@ pub struct Game {
 pub trait GameTrait {
     // Create and return a new game with default snooker setup
     fn new(
-        id: u256,tournament_id: u256, player1: ContractAddress, player2: ContractAddress, stake_amount: u256,
+        id: u256,
+        tournament_id: u256,
+        player1: ContractAddress,
+        player2: ContractAddress,
+        stake_amount: u256,
     ) -> Game;
 }
 
 impl GameImpl of GameTrait {
     fn new(
-        id: u256, tournament_id: u256, player1: ContractAddress, player2: ContractAddress, stake_amount: u256,
+        id: u256,
+        tournament_id: u256,
+        player1: ContractAddress,
+        player2: ContractAddress,
+        stake_amount: u256,
     ) -> Game {
         let zero_address = contract_address_const::<0x0>();
         let current_time = get_block_timestamp();

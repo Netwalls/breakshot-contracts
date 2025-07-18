@@ -2,7 +2,7 @@ use starknet::{ContractAddress, get_caller_address, get_block_timestamp};
 use dojo::model::{ModelStorage};
 use dojo::event::EventStorage;
 use dojo_starter::model::new_tourn_models::{
-    Tournament, TournamentTrait, TournamentStatus, TournamentReward, TournamentCounter
+    Tournament, TournamentTrait, TournamentStatus, TournamentReward, TournamentCounter,
 };
 use dojo_starter::types::tournament_types::SnookerTournament;
 use dojo_starter::errors::errors::SnooknetError;
@@ -93,7 +93,7 @@ pub mod TournamentContract {
             max_players: u8,
             start_date: u64,
             end_date: u64,
-            rewards: Array<TournamentReward>
+            rewards: Array<TournamentReward>,
         ) -> u256 {
             let mut world = self.world_default();
             let tournament_id = self.create_new_tournament_id();
@@ -103,7 +103,8 @@ pub mod TournamentContract {
             assert(start_date < end_date, SnooknetError::InvalidStartDate.into());
 
             let organizer = get_caller_address();
-            let tournament_type = SnookerTournament::Default; // Default type since not provided in interface
+            let tournament_type =
+                SnookerTournament::Default; // Default type since not provided in interface
 
             // Create new tournament
             let new_tournament: Tournament = TournamentTrait::new(
@@ -119,15 +120,10 @@ pub mod TournamentContract {
 
             world.write_model(@new_tournament);
 
-            world.emit_event(
-                @TournamentCreated {
-                    tournament_id,
-                    name,
-                    organizer,
-                    start_date,
-                    end_date,
-                }
-            );
+            world
+                .emit_event(
+                    @TournamentCreated { tournament_id, name, organizer, start_date, end_date },
+                );
 
             tournament_id
         }
@@ -140,19 +136,19 @@ pub mod TournamentContract {
             // Check if tournament is open for joining
             assert(
                 tournament.status == TournamentStatus::Pending,
-                SnooknetError::TournamentNotOpen.into()
+                SnooknetError::TournamentNotOpen.into(),
             );
 
             // Check if tournament is full
             assert(
                 tournament.current_players < tournament.max_players,
-                SnooknetError::TournamentIsFull.into()
+                SnooknetError::TournamentIsFull.into(),
             );
 
             // Check if player is already registered
             assert(
                 !self.is_player_registered(tournament_id, caller),
-                SnooknetError::PlayerAlreadyRegistered.into()
+                SnooknetError::PlayerAlreadyRegistered.into(),
             );
 
             // Update tournament with new player
@@ -170,22 +166,16 @@ pub mod TournamentContract {
             let caller = get_caller_address();
 
             // Check if caller is the organizer
-            assert(
-                caller == tournament.organizer,
-                SnooknetError::NotTournamentOrganizer.into()
-            );
+            assert(caller == tournament.organizer, SnooknetError::NotTournamentOrganizer.into());
 
             // Check if tournament is pending
             assert(
                 tournament.status == TournamentStatus::Pending,
-                SnooknetError::TournamentNotPending.into()
+                SnooknetError::TournamentNotPending.into(),
             );
 
             // Check if end_date is valid
-            assert(
-                end_date > get_block_timestamp(),
-                SnooknetError::InvalidEndDate.into()
-            );
+            assert(end_date > get_block_timestamp(), SnooknetError::InvalidEndDate.into());
 
             // Update tournament status and timestamps
             tournament.status = TournamentStatus::Active;
@@ -194,9 +184,10 @@ pub mod TournamentContract {
 
             world.write_model(@tournament);
 
-            world.emit_event(
-                @TournamentStarted { tournament_id, start_date: tournament.start_date }
-            );
+            world
+                .emit_event(
+                    @TournamentStarted { tournament_id, start_date: tournament.start_date },
+                );
         }
 
         fn end_tournament(ref self: ContractState, tournament_id: u256) {
@@ -205,15 +196,12 @@ pub mod TournamentContract {
             let caller = get_caller_address();
 
             // Check if caller is the organizer
-            assert(
-                caller == tournament.organizer,
-                SnooknetError::NotTournamentOrganizer.into()
-            );
+            assert(caller == tournament.organizer, SnooknetError::NotTournamentOrganizer.into());
 
             // Check if tournament is in progress
             assert(
                 tournament.status == TournamentStatus::Active,
-                SnooknetError::TournamentNotInProgress.into()
+                SnooknetError::TournamentNotInProgress.into(),
             );
 
             // Update tournament status and timestamp
@@ -222,9 +210,7 @@ pub mod TournamentContract {
 
             world.write_model(@tournament);
 
-            world.emit_event(
-                @TournamentEnded { tournament_id, end_date: tournament.end_date }
-            );
+            world.emit_event(@TournamentEnded { tournament_id, end_date: tournament.end_date });
         }
 
         fn cancel_tournament(ref self: ContractState, tournament_id: u256) {
@@ -233,15 +219,12 @@ pub mod TournamentContract {
             let caller = get_caller_address();
 
             // Check if caller is the organizer
-            assert(
-                caller == tournament.organizer,
-                SnooknetError::NotTournamentOrganizer.into()
-            );
+            assert(caller == tournament.organizer, SnooknetError::NotTournamentOrganizer.into());
 
             // Check if tournament is pending
             assert(
                 tournament.status == TournamentStatus::Pending,
-                SnooknetError::TournamentNotPending.into()
+                SnooknetError::TournamentNotPending.into(),
             );
 
             // Update tournament status
@@ -249,12 +232,15 @@ pub mod TournamentContract {
 
             world.write_model(@tournament);
 
-            world.emit_event(
-                @TournamentCanceled { tournament_id, timestamp: get_block_timestamp() }
-            );
+            world
+                .emit_event(
+                    @TournamentCanceled { tournament_id, timestamp: get_block_timestamp() },
+                );
         }
 
-        fn is_player_registered(self: @ContractState, tournament_id: u256, player: ContractAddress) -> bool {
+        fn is_player_registered(
+            self: @ContractState, tournament_id: u256, player: ContractAddress,
+        ) -> bool {
             let world = self.world_default();
             let tournament: Tournament = world.read_model(tournament_id);
             let mut i = 0;
@@ -277,28 +263,26 @@ pub mod TournamentContract {
             lost: bool,
             nft_coins_delta: u256,
             level_delta: u32,
-            tournament_won: bool
+            tournament_won: bool,
         ) {
             let mut world = self.world_default();
             let tournament: Tournament = world.read_model(tournament_id);
             let caller = get_caller_address();
 
             // Validate caller is the tournament organizer
-            assert(
-                caller == tournament.organizer,
-                SnooknetError::NotTournamentOrganizer.into()
-            );
+            assert(caller == tournament.organizer, SnooknetError::NotTournamentOrganizer.into());
 
             // Validate tournament is active or ended
             assert(
-                tournament.status == TournamentStatus::Active || tournament.status == TournamentStatus::Ended,
-                SnooknetError::TournamentNotInProgressOrEnded.into()
+                tournament.status == TournamentStatus::Active
+                    || tournament.status == TournamentStatus::Ended,
+                SnooknetError::TournamentNotInProgressOrEnded.into(),
             );
 
             // Validate player is registered in the tournament
             assert(
                 self.is_player_registered(tournament_id, player),
-                SnooknetError::PlayerNotRegistered.into()
+                SnooknetError::PlayerNotRegistered.into(),
             );
 
             // Read player model
@@ -326,20 +310,21 @@ pub mod TournamentContract {
             world.write_model(@player_data);
 
             // Emit event
-            world.emit_event(
-                @PlayerStatsUpdated {
-                    player,
-                    tournament_id,
-                    xp: player_data.xp,
-                    elo_rating: player_data.elo_rating,
-                    games_won: player_data.games_won,
-                    games_lost: player_data.games_lost,
-                    nft_coins_available: player_data.nft_coins_available,
-                    level: player_data.level,
-                    tournaments_won: player_data.tournaments_won,
-                    timestamp: get_block_timestamp(),
-                }
-            );
+            world
+                .emit_event(
+                    @PlayerStatsUpdated {
+                        player,
+                        tournament_id,
+                        xp: player_data.xp,
+                        elo_rating: player_data.elo_rating,
+                        games_won: player_data.games_won,
+                        games_lost: player_data.games_lost,
+                        nft_coins_available: player_data.nft_coins_available,
+                        level: player_data.level,
+                        tournaments_won: player_data.tournaments_won,
+                        timestamp: get_block_timestamp(),
+                    },
+                );
         }
 
         fn update_match_stats(
@@ -348,28 +333,25 @@ pub mod TournamentContract {
             player: ContractAddress,
             won: bool,
             xp_delta: u256,
-            elo_delta: u256
+            elo_delta: u256,
         ) {
             let mut world = self.world_default();
             let tournament: Tournament = world.read_model(tournament_id);
             let caller = get_caller_address();
 
             // Validate caller is the tournament organizer
-            assert(
-                caller == tournament.organizer,
-                SnooknetError::NotTournamentOrganizer.into()
-            );
+            assert(caller == tournament.organizer, SnooknetError::NotTournamentOrganizer.into());
 
             // Validate tournament is active
             assert(
                 tournament.status == TournamentStatus::Active,
-                SnooknetError::TournamentNotInProgress.into()
+                SnooknetError::TournamentNotInProgress.into(),
             );
 
             // Validate player is registered in the tournament
             assert(
                 self.is_player_registered(tournament_id, player),
-                SnooknetError::PlayerNotRegistered.into()
+                SnooknetError::PlayerNotRegistered.into(),
             );
 
             // Read player model
@@ -391,19 +373,19 @@ pub mod TournamentContract {
             world.write_model(@player_data);
 
             // Emit event
-            world.emit_event(
-                @MatchStatsUpdated {
-                    player,
-                    tournament_id,
-                    xp: player_data.xp,
-                    elo_rating: player_data.elo_rating,
-                    games_won: player_data.games_won,
-                    games_lost: player_data.games_lost,
-                    timestamp: get_block_timestamp(),
-                }
-            );
+            world
+                .emit_event(
+                    @MatchStatsUpdated {
+                        player,
+                        tournament_id,
+                        xp: player_data.xp,
+                        elo_rating: player_data.elo_rating,
+                        games_won: player_data.games_won,
+                        games_lost: player_data.games_lost,
+                        timestamp: get_block_timestamp(),
+                    },
+                );
         }
-    
     }
 
     #[generate_trait]

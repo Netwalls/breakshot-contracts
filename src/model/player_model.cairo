@@ -1,6 +1,6 @@
 use starknet::ContractAddress;
 
-#[derive(Copy, Drop, Serde, Debug)]
+#[derive(Copy, Drop, Serde, Debug, Introspect, PartialEq)]
 #[dojo::model]
 pub struct Player {
     #[key]
@@ -25,7 +25,7 @@ pub trait PlayerTrait {
         games_lost: u64,
         nft_coins_available: u256,
         level: u32,
-        tournaments_won: u64, // Added parameter
+        tournaments_won: u64 // Added parameter
     ) -> Player;
 }
 
@@ -39,7 +39,7 @@ impl PlayerImpl of PlayerTrait {
         games_lost: u64,
         nft_coins_available: u256,
         level: u32,
-        tournaments_won: u64, // Added parameter
+        tournaments_won: u64 // Added parameter
     ) -> Player {
         Player {
             contract_address,
@@ -50,7 +50,7 @@ impl PlayerImpl of PlayerTrait {
             games_lost,
             nft_coins_available,
             level,
-            tournaments_won, // Initialize new field
+            tournaments_won // Initialize new field
         }
     }
 }
@@ -86,7 +86,9 @@ mod tests {
         );
 
         assert(player.contract_address == contract_address, 'Contract address mismatch');
-        assert(player.leaderboard_position == leaderboard_position, 'Leaderboard position mismatch');
+        assert(
+            player.leaderboard_position == leaderboard_position, 'Leaderboard position mismatch',
+        );
         assert(player.xp == xp, 'XP mismatch');
         assert(player.elo_rating == elo_rating, 'Elo rating mismatch');
         assert(player.games_won == games_won, 'Games won mismatch');
@@ -124,7 +126,15 @@ mod tests {
         let max_u32 = 4294967295_u32;
 
         let player = PlayerImpl::new(
-            contract_address, max_u64, max_u256, max_u256, max_u64, max_u64, max_u256, max_u32, max_u64,
+            contract_address,
+            max_u64,
+            max_u256,
+            max_u256,
+            max_u64,
+            max_u64,
+            max_u256,
+            max_u32,
+            max_u64,
         );
 
         assert(player.contract_address == contract_address, 'Contract address mismatch');

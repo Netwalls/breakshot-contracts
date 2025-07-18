@@ -17,10 +17,12 @@
 //     }
 
 //     #[external(v0)]
-//     fn create_player(ref self: ContractState, leaderboard_position: u64, xp: u256, elo_rating: u256, games_won: u64, games_lost: u64, nft_coins_available: u256, level: u32) {
+//     fn create_player(ref self: ContractState, leaderboard_position: u64, xp: u256, elo_rating:
+//     u256, games_won: u64, games_lost: u64, nft_coins_available: u256, level: u32) {
 //         let world = self.world.read();
 //         let player_addr = get_caller_address();
-//         let player = PlayerImpl::new(player_addr, leaderboard_position, xp, elo_rating, games_won, games_lost, nft_coins_available, level);
+//         let player = PlayerImpl::new(player_addr, leaderboard_position, xp, elo_rating,
+//         games_won, games_lost, nft_coins_available, level);
 //         set!(world, (player));
 //     }
 
@@ -30,7 +32,8 @@
 //         let player_addr = get_caller_address();
 //         let mut player = get!(world, player_addr, (Player));
 //         assert(player.contract_address == player_addr, 'Invalid player');
-//         set!(world, (Player { contract_address: player_addr, leaderboard_position: 0, xp: 0, elo_rating: 0, games_won: 0, games_lost: 0, nft_coins_available: 0, level: 0 }));
+//         set!(world, (Player { contract_address: player_addr, leaderboard_position: 0, xp: 0,
+//         elo_rating: 0, games_won: 0, games_lost: 0, nft_coins_available: 0, level: 0 }));
 //     }
 // }
 
@@ -45,7 +48,8 @@
 //     #[available_gas(2000000)]
 //     fn test_create_player() {
 //         let world = spawn_test_world(array![get_model_selector::<Player>()].span());
-//         let contract_address = deploy_contract(Players::TEST_CLASS_HASH, array![world.contract_address.into()].span());
+//         let contract_address = deploy_contract(Players::TEST_CLASS_HASH,
+//         array![world.contract_address.into()].span());
 //         let caller = contract_address_const::<'player_1'>();
 //         set_caller_address(caller);
 
@@ -67,7 +71,8 @@
 //     #[available_gas(2000000)]
 //     fn test_delete_player() {
 //         let world = spawn_test_world(array![get_model_selector::<Player>()].span());
-//         let contract_address = deploy_contract(Players::TEST_CLASS_HASH, array![world.contract_address.into()].span());
+//         let contract_address = deploy_contract(Players::TEST_CLASS_HASH,
+//         array![world.contract_address.into()].span());
 //         let caller = contract_address_const::<'player_1'>();
 //         set_caller_address(caller);
 
