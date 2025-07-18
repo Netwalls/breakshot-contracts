@@ -16,7 +16,8 @@ pub enum SnookerTournament {
 pub impl SnookerTournamentImpl of SnookerTournamentTrait {
     fn is_prestigious(self: @SnookerTournament) -> bool {
         match self {
-            SnookerTournament::Ranking | SnookerTournament::Masters | SnookerTournament::WorldChampionship => true,
+            SnookerTournament::Ranking | SnookerTournament::Masters |
+            SnookerTournament::WorldChampionship => true,
             _ => false,
         }
     }

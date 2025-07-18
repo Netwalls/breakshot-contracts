@@ -11,14 +11,14 @@ pub trait ITournaments<T> {
         max_players: u8,
         start_date: u64,
         end_date: u64,
-        rewards: Array<TournamentReward>
+        rewards: Array<TournamentReward>,
     ) -> u256;
     fn register_player(ref self: T, tournament_id: u256);
     fn start_tournament(ref self: T, tournament_id: u256, end_date: u64);
     fn end_tournament(ref self: T, tournament_id: u256);
     fn cancel_tournament(ref self: T, tournament_id: u256);
     fn is_player_registered(self: @T, tournament_id: u256, player: ContractAddress) -> bool;
-        fn update_player_stats(
+    fn update_player_stats(
         ref self: T,
         tournament_id: u256,
         player: ContractAddress,
@@ -28,7 +28,7 @@ pub trait ITournaments<T> {
         lost: bool,
         nft_coins_delta: u256,
         level_delta: u32,
-        tournament_won: bool
+        tournament_won: bool,
     );
     fn update_match_stats(
         ref self: T,
@@ -36,6 +36,6 @@ pub trait ITournaments<T> {
         player: ContractAddress,
         won: bool,
         xp_delta: u256,
-        elo_delta: u256
+        elo_delta: u256,
     );
 }

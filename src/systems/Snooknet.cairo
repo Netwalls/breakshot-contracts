@@ -6,7 +6,7 @@ use dojo::event::EventStorage;
 
 use dojo_starter::interfaces::ISnooknet::ISnooknet;
 use dojo_starter::model::game_model::{
-    Game, GameTrait, GameState, GameCounter, MatchStatus, BallState, GameIndex,GameScore
+    Game, GameTrait, GameState, GameCounter, MatchStatus, BallState, GameIndex, GameScore,
 };
 use dojo_starter::model::new_tourn_models::{
     Tournament as TournamentModel, TournamentTrait, TournamentStatus, TournamentReward,
@@ -81,16 +81,17 @@ pub mod Snooknet {
 
         //     world.write_model(@new_player);
 
-        //     world.emit_event(@PlayerCreated { player: caller, timestamp: get_block_timestamp() });
+        //     world.emit_event(@PlayerCreated { player: caller, timestamp: get_block_timestamp()
+        //     });
         // }
 
-fn create_player(ref self: ContractState) {
-        let mut world = self.world_default();
-        let caller: ContractAddress = get_caller_address();
-        let new_player: Player = PlayerTrait::new(caller, 0, 0, 0, 0, 0, 0, 1, 0);
-        world.write_model(@new_player);
-        world.emit_event(@PlayerCreated { player: caller, timestamp: get_block_timestamp() });
-    }
+        fn create_player(ref self: ContractState) {
+            let mut world = self.world_default();
+            let caller: ContractAddress = get_caller_address();
+            let new_player: Player = PlayerTrait::new(caller, 0, 0, 0, 0, 0, 0, 1, 0);
+            world.write_model(@new_player);
+            world.emit_event(@PlayerCreated { player: caller, timestamp: get_block_timestamp() });
+        }
 
         fn create_new_game_id(ref self: ContractState) -> u256 {
             let mut world = self.world_default();
@@ -133,35 +134,35 @@ fn create_player(ref self: ContractState) {
         //     game_id
         // }
 
-fn create_match(
-        ref self: ContractState, opponent: ContractAddress, stake_amount: u256,
-    ) -> u256 {
-        let mut world = self.world_default();
-        let game_id = self.create_new_game_id();
-        let timestamp = get_block_timestamp();
-        let player_1 = get_caller_address();
+        fn create_match(
+            ref self: ContractState, opponent: ContractAddress, stake_amount: u256,
+        ) -> u256 {
+            let mut world = self.world_default();
+            let game_id = self.create_new_game_id();
+            let timestamp = get_block_timestamp();
+            let player_1 = get_caller_address();
 
-        assert(player_1 != opponent, SnooknetError::PlayersCannotBeSame.into());
-        assert(stake_amount > 0, SnooknetError::StakeMustBePositive.into());
+            assert(player_1 != opponent, SnooknetError::PlayersCannotBeSame.into());
+            assert(stake_amount > 0, SnooknetError::StakeMustBePositive.into());
 
-        let mut new_game: Game = GameTrait::new(game_id, 0, player_1, opponent, stake_amount);
+            let mut new_game: Game = GameTrait::new(game_id, 0, player_1, opponent, stake_amount);
 
-        new_game.current_turn = player_1;
-        new_game.red_balls_remaining = 15;
-        new_game.state = GameState::NotStarted;
-        new_game.winner = contract_address_const::<0x0>();
+            new_game.current_turn = player_1;
+            new_game.red_balls_remaining = 15;
+            new_game.state = GameState::NotStarted;
+            new_game.winner = contract_address_const::<0x0>();
 
-        world.write_model(@new_game);
+            world.write_model(@new_game);
 
-        let index1 = GameIndex { player: player_1, game_id, created_at: timestamp };
-        world.write_model(@index1);
+            let index1 = GameIndex { player: player_1, game_id, created_at: timestamp };
+            world.write_model(@index1);
 
-        let index2 = GameIndex { player: opponent, game_id, created_at: timestamp };
-        world.write_model(@index2);
+            let index2 = GameIndex { player: opponent, game_id, created_at: timestamp };
+            world.write_model(@index2);
 
-        world.emit_event(@GameCreated { game_id, timestamp });
-        game_id
-    }
+            world.emit_event(@GameCreated { game_id, timestamp });
+            game_id
+        }
 
         fn retrieve_game(ref self: ContractState, game_id: u256) -> Game {
             // Get default world
@@ -170,7 +171,6 @@ fn create_match(
             let game: Game = world.read_model(game_id);
             game
         }
-
 
 
         fn join_tournament(ref self: ContractState, tournament_id: u256) {
@@ -264,90 +264,94 @@ fn create_match(
             world.emit_event(@Winner { game_id, winner });
             world.emit_event(@GameEnded { game_id, timestamp });
         }
-
-        // fn pot_ball(ref self: ContractState, game_id: u256, ball_type: felt252, is_cue_foul: bool) {
-        //     let mut world = self.world_default();
-        //     let mut game: Game = world.read_model(game_id);
-        //     let mut score: GameScore = world.read_model(game_id);
-        //     let caller = get_caller_address();
+        // fn pot_ball(ref self: ContractState, game_id: u256, ball_type: felt252, is_cue_foul:
+    // bool) {
+    //     let mut world = self.world_default();
+    //     let mut game: Game = world.read_model(game_id);
+    //     let mut score: GameScore = world.read_model(game_id);
+    //     let caller = get_caller_address();
 
         //     assert(caller == game.current_turn, SnooknetError::NotAPlayer.into());
-        //     assert(game.state == GameState::InProgress, SnooknetError::GameNotInProgress.into());
+    //     assert(game.state == GameState::InProgress, SnooknetError::GameNotInProgress.into());
 
         //     let timestamp = get_block_timestamp();
-        //     let mut points = 0;
+    //     let mut points = 0;
 
         //     if is_cue_foul {
-        //         game.cue_ball_fouled = true;
-        //         let opponent = if game.current_turn == game.player1 { game.player2 } else { game.player1 };
-        //         if opponent == game.player1 {
-        //             score.player1_score += 4; // Minimum foul penalty
-        //         } else {
-        //             score.player2_score += 4;
-        //         }
-        //         score.last_foul = timestamp;
-        //     } else if ball_type == "red" && game.red_balls_remaining > 0 {
-        //         game.red_balls_remaining -= 1;
-        //         points = 1;
-        //     } else if game.red_balls_remaining == 0 {
-        //         let yellow_state = world.read_model::<BallState>((game_id, "yellow"));
-        //         let green_state = world.read_model::<BallState>((game_id, "green"));
-        //         let brown_state = world.read_model::<BallState>((game_id, "brown"));
-        //         let blue_state = world.read_model::<BallState>((game_id, "blue"));
-        //         let pink_state = world.read_model::<BallState>((game_id, "pink"));
-        //         let black_state = world.read_model::<BallState>((game_id, "black"));
+    //         game.cue_ball_fouled = true;
+    //         let opponent = if game.current_turn == game.player1 { game.player2 } else {
+    //         game.player1 };
+    //         if opponent == game.player1 {
+    //             score.player1_score += 4; // Minimum foul penalty
+    //         } else {
+    //             score.player2_score += 4;
+    //         }
+    //         score.last_foul = timestamp;
+    //     } else if ball_type == "red" && game.red_balls_remaining > 0 {
+    //         game.red_balls_remaining -= 1;
+    //         points = 1;
+    //     } else if game.red_balls_remaining == 0 {
+    //         let yellow_state = world.read_model::<BallState>((game_id, "yellow"));
+    //         let green_state = world.read_model::<BallState>((game_id, "green"));
+    //         let brown_state = world.read_model::<BallState>((game_id, "brown"));
+    //         let blue_state = world.read_model::<BallState>((game_id, "blue"));
+    //         let pink_state = world.read_model::<BallState>((game_id, "pink"));
+    //         let black_state = world.read_model::<BallState>((game_id, "black"));
 
         //         if ball_type == "yellow" && !yellow_state.is_potted {
-        //             points = 2;
-        //         } else if ball_type == "green" && !green_state.is_potted {
-        //             points = 3;
-        //         } else if ball_type == "brown" && !brown_state.is_potted {
-        //             points = 4;
-        //         } else if ball_type == "blue" && !blue_state.is_potted {
-        //             points = 5;
-        //         } else if ball_type == "pink" && !pink_state.is_potted {
-        //             points = 6;
-        //         } else if ball_type == "black" && !black_state.is_potted {
-        //             points = 7;
-        //         } else {
-        //             assert(false, SnooknetError::InvalidBallType.into());
-        //         }
-        //         let mut ball = BallState { game_id, ball_type, is_potted: true, last_updated: timestamp };
-        //         world.write_model(@ball);
-        //     } else {
-        //         assert(false, SnooknetError::InvalidBallType.into());
-        //     }
+    //             points = 2;
+    //         } else if ball_type == "green" && !green_state.is_potted {
+    //             points = 3;
+    //         } else if ball_type == "brown" && !brown_state.is_potted {
+    //             points = 4;
+    //         } else if ball_type == "blue" && !blue_state.is_potted {
+    //             points = 5;
+    //         } else if ball_type == "pink" && !pink_state.is_potted {
+    //             points = 6;
+    //         } else if ball_type == "black" && !black_state.is_potted {
+    //             points = 7;
+    //         } else {
+    //             assert(false, SnooknetError::InvalidBallType.into());
+    //         }
+    //         let mut ball = BallState { game_id, ball_type, is_potted: true, last_updated:
+    //         timestamp };
+    //         world.write_model(@ball);
+    //     } else {
+    //         assert(false, SnooknetError::InvalidBallType.into());
+    //     }
 
         //     if points > 0 {
-        //         if game.current_turn == game.player1 {
-        //             score.player1_score += points;
-        //         } else {
-        //             score.player2_score += points;
-        //         }
-        //     }
+    //         if game.current_turn == game.player1 {
+    //             score.player1_score += points;
+    //         } else {
+    //             score.player2_score += points;
+    //         }
+    //     }
 
         //     game.updated_at = timestamp;
-        //     world.write_model(@game);
-        //     world.write_model(@score);
+    //     world.write_model(@game);
+    //     world.write_model(@score);
 
         //     if points == 0 || is_cue_foul {
-        //         game.current_turn = if game.current_turn == game.player1 { game.player2 } else { game.player1 };
-        //         world.write_model(@game);
-        //     }
+    //         game.current_turn = if game.current_turn == game.player1 { game.player2 } else {
+    //         game.player1 };
+    //         world.write_model(@game);
+    //     }
 
         //     if game.red_balls_remaining == 0 &&
-        //        yellow_state.is_potted &&
-        //        green_state.is_potted &&
-        //        brown_state.is_potted &&
-        //        blue_state.is_potted &&
-        //        pink_state.is_potted &&
-        //        black_state.is_potted {
-        //         game.state = GameState::Finished;
-        //         game.winner = if score.player1_score > score.player2_score { game.player1 } else { game.player2 };
-        //         world.write_model(@game);
-        //         world.emit_event(@GameEnded { game_id, timestamp });
-        //     }
-        // }
+    //        yellow_state.is_potted &&
+    //        green_state.is_potted &&
+    //        brown_state.is_potted &&
+    //        blue_state.is_potted &&
+    //        pink_state.is_potted &&
+    //        black_state.is_potted {
+    //         game.state = GameState::Finished;
+    //         game.winner = if score.player1_score > score.player2_score { game.player1 } else
+    //         { game.player2 };
+    //         world.write_model(@game);
+    //         world.emit_event(@GameEnded { game_id, timestamp });
+    //     }
+    // }
 
     }
 
@@ -369,6 +373,4 @@ fn create_match(
         }
     }
 }
-
-
 

@@ -1,4 +1,3 @@
-
 // use starknet::{ContractAddress, get_caller_address};
 
 // #[starknet::interface]
@@ -10,7 +9,8 @@
 //     fn balanceOf(self: @T, account: ContractAddress) -> u256;
 //     fn allowance(self: @T, owner: ContractAddress, spender: ContractAddress) -> u256;
 //     fn transfer(ref self: T, recipient: ContractAddress, amount: u256) -> bool;
-//     fn transferFrom(ref self: T, sender: ContractAddress, recipient: ContractAddress, amount: u256) -> bool;
+//     fn transferFrom(ref self: T, sender: ContractAddress, recipient: ContractAddress, amount:
+//     u256) -> bool;
 //     fn approve(ref self: T, spender: ContractAddress, amount: u256) -> bool;
 // }
 
@@ -59,7 +59,8 @@
 //         let caller = get_caller_address();
 //         self.total_supply.write(initial_supply);
 //         self.balances.write(caller, initial_supply);
-//         self.emit(Transfer { from: starknet::contract_address_const::<0>(), to: caller, value: initial_supply });
+//         self.emit(Transfer { from: starknet::contract_address_const::<0>(), to: caller, value:
+//         initial_supply });
 //     }
 
 //     #[abi(embed_v0)]
@@ -84,7 +85,8 @@
 //             self.balances.read(account)
 //         }
 
-//         fn allowance(self: @ContractState, owner: ContractAddress, spender: ContractAddress) -> u256 {
+//         fn allowance(self: @ContractState, owner: ContractAddress, spender: ContractAddress) ->
+//         u256 {
 //             self.allowances.read((owner, spender))
 //         }
 
@@ -94,7 +96,8 @@
 //             true
 //         }
 
-//         fn transferFrom(ref self: ContractState, sender: ContractAddress, recipient: ContractAddress, amount: u256) -> bool {
+//         fn transferFrom(ref self: ContractState, sender: ContractAddress, recipient:
+//         ContractAddress, amount: u256) -> bool {
 //             let caller = get_caller_address();
 //             let allowance = self.allowances.read((sender, caller));
 //             assert(allowance >= amount, 'Insufficient allowance');
@@ -114,9 +117,12 @@
 
 //     #[generate_trait]
 //     impl InternalImpl of InternalTrait {
-//         fn _transfer(ref self: ContractState, sender: ContractAddress, recipient: ContractAddress, amount: u256) {
-//             assert(sender != starknet::contract_address_const::<0>(), 'Transfer from zero address');
-//             assert(recipient != starknet::contract_address_const::<0>(), 'Transfer to zero address');
+//         fn _transfer(ref self: ContractState, sender: ContractAddress, recipient:
+//         ContractAddress, amount: u256) {
+//             assert(sender != starknet::contract_address_const::<0>(), 'Transfer from zero
+//             address');
+//             assert(recipient != starknet::contract_address_const::<0>(), 'Transfer to zero
+//             address');
 //             let sender_balance = self.balances.read(sender);
 //             assert(sender_balance >= amount, 'Insufficient balance');
 //             self.balances.write(sender, sender_balance - amount);

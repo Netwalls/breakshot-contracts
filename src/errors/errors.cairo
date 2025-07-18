@@ -57,7 +57,6 @@ impl SnooknetErrorIntoFelt252 of Into<SnooknetError, felt252> {
             SnooknetError::MatchNotPending => 'Match Not Pending',
             SnooknetError::MatchNotInProgress => 'Match Not In Progress',
             SnooknetError::MatchNotInProgressOrPaused => 'Match Not In Progress Or Paused',
-
         }
     }
 }

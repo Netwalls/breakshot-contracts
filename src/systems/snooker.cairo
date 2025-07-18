@@ -7,7 +7,8 @@
 // use dojo_starter::types::tournament_types::SnookerTournament;
 // use dojo_starter::errors::errors::SnooknetError;
 // use dojo_starter::model::player_model::{Player, PlayerTrait};
-// use dojo_starter::model::game_model::{Game, GameTrait, GameState, MatchStatus, GameCounter, GameIndex, GameScore, BallState};
+// use dojo_starter::model::game_model::{Game, GameTrait, GameState, MatchStatus, GameCounter,
+// GameIndex, GameScore, BallState};
 // use dojo_starter::interfaces::ITournaments::ITournaments;
 // use dojo_starter::interfaces::ISnooknet::ISnooknet;
 // use dojo_starter::types::task::{Task, TaskTrait};
@@ -110,14 +111,16 @@
 //             world.has_model(player)
 //         }
 
-//         fn validate_match_participant(self: @ContractState, game: @Game, caller: ContractAddress) {
+//         fn validate_match_participant(self: @ContractState, game: @Game, caller: ContractAddress)
+//         {
 //             assert(
 //                 *game.player1 == caller || *game.player2 == caller,
 //                 SnooknetError::NotMatchParticipant.into()
 //             );
 //         }
 
-//         fn check_achievements(ref self: ContractState, player: ContractAddress, game_id: u256, break_score: u32) {
+//         fn check_achievements(ref self: ContractState, player: ContractAddress, game_id: u256,
+//         break_score: u32) {
 //             let mut world = self.world_default();
 //             let mut player_data: Player = world.read_model(player);
 //             let timestamp = get_block_timestamp();
@@ -163,10 +166,12 @@
 //             let player = PlayerTrait::new(caller, 0, 0, 1500, 0, 0, 0, 1, 0);
 //             world.write_model(@player);
 
-//             world.emit_event(@PlayerCreated { player: caller, timestamp: get_block_timestamp() });
+//             world.emit_event(@PlayerCreated { player: caller, timestamp: get_block_timestamp()
+//             });
 //         }
 
-//         fn create_match(ref self: ContractState, opponent: ContractAddress, stake_amount: u256) -> u256 {
+//         fn create_match(ref self: ContractState, opponent: ContractAddress, stake_amount: u256)
+//         -> u256 {
 //             let mut world = self.world_default();
 //             let caller = get_caller_address();
 //             let timestamp = get_block_timestamp();
@@ -183,7 +188,8 @@
 //             // Initialize game indices and score
 //             let game_index1 = GameIndex { player: caller, game_id, created_at: timestamp };
 //             let game_index2 = GameIndex { player: opponent, game_id, created_at: timestamp };
-//             let game_score = GameScore { game_id, player1_score: 0, player2_score: 0, last_foul: 0 };
+//             let game_score = GameScore { game_id, player1_score: 0, player2_score: 0, last_foul:
+//             0 };
 
 //             // Initialize ball states
 //             let ball_types = array!["red", "yellow", "green", "brown", "blue", "pink", "black"];
@@ -232,7 +238,8 @@
 //             let caller = get_caller_address();
 
 //             self.validate_match_participant(@game, caller);
-//             assert(game.match_status == MatchStatus::Pending, SnooknetError::MatchNotPending.into());
+//             assert(game.match_status == MatchStatus::Pending,
+//             SnooknetError::MatchNotPending.into());
 
 //             game.current_turn = game.player1;
 //             game.match_status = MatchStatus::Ongoing;
@@ -252,7 +259,8 @@
 //             let caller = get_caller_address();
 
 //             self.validate_match_participant(@game, caller);
-//             assert(game.match_status == MatchStatus::Ongoing, SnooknetError::MatchNotInProgress.into());
+//             assert(game.match_status == MatchStatus::Ongoing,
+//             SnooknetError::MatchNotInProgress.into());
 
 //             game.match_status = MatchStatus::Paused;
 //             game.updated_at = get_block_timestamp();
@@ -271,8 +279,8 @@
 
 //             self.validate_match_participant(@game, caller);
 //             assert(
-//                 game.match_status == MatchStatus::Ongoing || game.match_status == MatchStatus::Paused,
-//                 SnooknetError::MatchNotInProgressOrPaused.into()
+//                 game.match_status == MatchStatus::Ongoing || game.match_status ==
+//                 MatchStatus::Paused, SnooknetError::MatchNotInProgressOrPaused.into()
 //             );
 //             assert(
 //                 winner == game.player1 || winner == game.player2,
@@ -307,13 +315,15 @@
 
 //             // Check achievements based on game score
 //             let game_score: GameScore = world.read_model(game_id);
-//             let break_score = if winner == game.player1 { game_score.player1_score } else { game_score.player2_score };
+//             let break_score = if winner == game.player1 { game_score.player1_score } else {
+//             game_score.player2_score };
 //             self.check_achievements(winner, game_id, break_score);
 
 //             // Update tournament stats
 //             if game.tournament_id != 0 {
 //                 let tournament: Tournament = world.read_model(game.tournament_id);
-//                 assert(tournament.status == TournamentStatus::Active, SnooknetError::TournamentNotInProgress.into());
+//                 assert(tournament.status == TournamentStatus::Active,
+//                 SnooknetError::TournamentNotInProgress.into());
 //                 let mut tournament_contract = self.world_default();
 //                 tournament_contract.execute_selector(
 //                     @TournamentContract::update_match_stats,
@@ -343,8 +353,10 @@
 
 //             assert(self.validate_player(caller), SnooknetError::PlayerNotRegistered.into());
 //             let tournament: Tournament = world.read_model(tournament_id);
-//             assert(tournament.status == TournamentStatus::Pending, SnooknetError::TournamentNotOpen.into());
-//             assert(tournament.current_players < tournament.max_players, SnooknetError::TournamentIsFull.into());
+//             assert(tournament.status == TournamentStatus::Pending,
+//             SnooknetError::TournamentNotOpen.into());
+//             assert(tournament.current_players < tournament.max_players,
+//             SnooknetError::TournamentIsFull.into());
 
 //             let mut tournament_contract = self.world_default();
 //             tournament_contract.execute_selector(
@@ -354,7 +366,8 @@
 //         }}
 //     }
 
-// //         fn pot_ball(ref self: ContractState, game_id: u256, ball_type: felt252, is_cue_foul: bool) {
+// //         fn pot_ball(ref self: ContractState, game_id: u256, ball_type: felt252, is_cue_foul:
+// bool) {
 // //             let mut world = self.world_default();
 // //             let mut game: Game = world.read_model(game_id);
 // //             let mut score: GameScore = world.read_model(game_id);
@@ -363,7 +376,8 @@
 
 // //             self.validate_match_participant(@game, caller);
 // //             assert(caller == game.current_turn, SnooknetError::NotYourTurn.into());
-// //             assert(game.match_status == MatchStatus::Ongoing, SnooknetError::MatchNotInProgress.into());
+// //             assert(game.match_status == MatchStatus::Ongoing,
+// SnooknetError::MatchNotInProgress.into());
 
 // //             let mut points = 0_u32;
 // //             let mut ball_state: BallState = world.read_model((game_id, ball_type));
@@ -371,7 +385,8 @@
 // //             if is_cue_foul {
 // //                 game.cue_ball_fouled = true;
 // //                 score.last_foul = timestamp;
-// //                 let opponent = if caller == game.player1 { game.player2 } else { game.player1 };
+// //                 let opponent = if caller == game.player1 { game.player2 } else { game.player1
+// };
 // //                 if opponent == game.player1 {
 // //                     score.player1_score += 4; // Minimum foul penalty
 // //                 } else {
@@ -430,14 +445,16 @@
 // //                     score.player2_score
 // //                 });
 // //             } else if points == 0 || is_cue_foul {
-// //                 game.current_turn = if caller == game.player1 { game.player2 } else { game.player1 };
+// //                 game.current_turn = if caller == game.player1 { game.player2 } else {
+// game.player1 };
 // //             }
 
 // //             world.write_model(@game);
 // //             world.write_model(@score);
 // //             if !is_cue_foul {
 // //                 world.write_model(@ball_state);
-// //                 world.emit_event(@BallPotted { game_id, player: caller, ball_type, points, timestamp });
+// //                 world.emit_event(@BallPotted { game_id, player: caller, ball_type, points,
+// timestamp });
 // //             }
 // //         }
 // //     }

@@ -75,7 +75,7 @@ impl TournamentImpl of TournamentTrait {
             end_date,
             status: TournamentStatus::Pending,
             rewards,
-            players: ArrayTrait::new()
+            players: ArrayTrait::new(),
         }
     }
 }
